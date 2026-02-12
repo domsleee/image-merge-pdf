@@ -5,7 +5,7 @@
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Merge multiple images into a single PDF — free, client-side, no upload required.">
 
     <!-- CSS -->
@@ -15,11 +15,11 @@
     <header class="navbar navbar-dark bg-dark navbar-expand-sm">
       <nav class="container">
         <a class="navbar-brand" href="#">ImgMerge</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-md-auto">
+          <ul class="navbar-nav ms-md-auto">
             <li class="nav-item">
               <a class="nav-link" href="#">License</a>
             </li>
@@ -48,13 +48,13 @@
               </label>
               <div id="quality-slider-container" style="display:none" class="mt-2">
                 <label for="qualitySlider" class="mb-1">Quality: <span id="qualityValue">70</span>%</label>
-                <input type="range" class="custom-range" id="qualitySlider" min="1" max="100" value="70">
+                <input type="range" class="form-range" id="qualitySlider" min="1" max="100" value="70">
                 <small class="text-muted">Lower = smaller file, less quality</small>
               </div>
             </div>
           </div>
           <div id="downloadSection" style="display:none" class="mb-3">
-            <button id="downloadBtn" class="btn btn-primary btn-lg btn-block">Download PDF</button>
+            <button id="downloadBtn" class="btn btn-primary btn-lg w-100">Download PDF</button>
             <p class="text-center mt-1 mb-0"><small class="text-muted">File size: <span id="fileSize"></span></small></p>
           </div>
           <div id="file-list-section" style="display:none">

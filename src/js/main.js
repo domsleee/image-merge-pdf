@@ -1,6 +1,3 @@
-var $ = require('jquery');
-window.jQuery = window.$ = $;
-require('popper.js');
 require('bootstrap');
 
 var Dropbox = require('./dropbox');
