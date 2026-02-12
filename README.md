@@ -2,7 +2,7 @@
 
 Merge multiple images into a single PDF — free, client-side, no upload required.
 
-**[Try it live](https://domsleee.github.io/Image-merge-pdf/)**
+**[Try it live](https://domsleee.github.io/image-merge-pdf/)**
 
 ## Features
 
