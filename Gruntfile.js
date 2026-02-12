@@ -2,6 +2,9 @@ module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
       dist: {
+        options: {
+          transform: ['brfs']
+        },
         files: {
           'dist/js/bundle.js': ['src/js/main.js']
         }
