@@ -48,7 +48,7 @@ var Compress = (function() {
 
     // Compress a single file object by converting to JPG via canvas
     Compress.prototype.compressFile = function(nf, callback) {
-        var key = nf.base64;
+        var key = nf.id;
         if (this._cache[key]) {
             callback(this._cache[key]);
             return;

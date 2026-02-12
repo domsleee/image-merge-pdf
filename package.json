@@ -12,9 +12,7 @@
     "grunt-shell": "^2.1.0",
     "image-compressor": "^1.2.0",
     "pdfkit": "^0.8.3",
+    "canvas": "^3.2.1",
     "sortablejs": "^1.7.0"
-  },
-  "dependencies": {
-    "canvas": "^3.2.1"
   }
 }
