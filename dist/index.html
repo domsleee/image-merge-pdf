@@ -32,7 +32,7 @@
             <a class="nav-link" href="#">License</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">GitHub</a>
+            <a class="nav-link" href="https://github.com/domsleee/Image-merge-pdf">GitHub</a>
           </li>
         </ul>
       </div>
@@ -40,8 +40,8 @@
   </header>
   <body>
     <main role="main" class="container mb-4">
-      <div class="row">
-        <div class="col-md-6 col-xs-12">
+      <div id="layout-row" class="row">
+        <div id="left-col" class="col-md-6 col-xs-12">
           <p>Merge several images into a single pdf</p>
           <div id="dropbox">
             <input class="fileDialog" type="file" multiple/>
@@ -50,13 +50,44 @@
               <small>(PNG/JPG images supported)</small>
             </div>
           </div>
-          <label>Files</label>
-          <ul id="items"></ul>
+          <div id="compress-controls" class="card mb-3">
+            <div class="card-body py-2 px-3">
+              <label class="mb-0">
+                <input type="checkbox" id="compressCheckbox"> Compress images to JPG
+              </label>
+              <div id="quality-slider-container" style="display:none" class="mt-2">
+                <label for="qualitySlider" class="mb-1">Quality: <span id="qualityValue">70</span>%</label>
+                <input type="range" class="custom-range" id="qualitySlider" min="1" max="100" value="70">
+                <small class="text-muted">Lower = smaller file, less quality</small>
+              </div>
+            </div>
+          </div>
+          <div id="downloadSection" style="display:none" class="mb-3">
+            <button id="downloadBtn" class="btn btn-primary btn-lg btn-block">Download PDF</button>
+            <p class="text-center mt-1 mb-0"><small class="text-muted">File size: <span id="fileSize"></span></small></p>
+          </div>
+          <div id="file-list-section" style="display:none">
+            <label>Files</label>
+            <ul id="items"></ul>
+          </div>
         </div>
-        <div class="col-md-6 col-xs-12">
+        <div id="right-col" class="col-md-6 col-xs-12">
           <label>Preview</label>
-          <div style="position:relative;padding-top:120%">
-            <iframe id="preview" style="position:absolute;top:0;bottom:0"></iframe>
+          <div id="preview-placeholder" class="preview-skeleton">
+            <div class="skeleton-content">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 15l4-4a2 2 0 012.8 0L15 16"/>
+                <path d="M14 14l1-1a2 2 0 012.8 0L21 16"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+              </svg>
+              <p>Add images to see preview</p>
+            </div>
+          </div>
+          <div id="preview-active" style="display:none">
+            <div style="position:relative;padding-top:120%">
+              <iframe id="preview" style="position:absolute;top:0;bottom:0"></iframe>
+            </div>
           </div>
         </div>
       </div>

@@ -24,27 +24,34 @@ var List = (function() {
             var nf = nfs[i];
             this._list.push(nf);
             var li = document.createElement('li');
-            li.innerText = nf.name;
+            var handle = document.createElement('span');
+            handle.className = 'drag-handle';
+            handle.innerHTML = '&#9776;';
+            var nameSpan = document.createElement('span');
+            nameSpan.className = 'file-name';
+            nameSpan.textContent = nf.name;
+            var deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '&times;';
+            deleteBtn.title = 'Remove';
+            li.appendChild(handle);
+            li.appendChild(nameSpan);
+            li.appendChild(deleteBtn);
             this._el.appendChild(li);
 
             var _this = this;
-            li.addEventListener('click', function(e) { 
-                var target = e.target;
-                var curr = target;
-                var ind = 0;
-                while (curr = curr.previousSibling) ind++;
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var li = e.target.parentNode;
+                var ind = Array.prototype.indexOf.call(_this._el.children, li);
                 _this.remove(ind);
-                console.log(ind);
             });
         }
         this._hasChanged();
     }
     List.prototype.remove = function(i) {
-        $('#items li')[i].remove();
-        for (var j = i; j < this._list.length-1; j++) {
-            this._list[j] = this._list[j+1];
-        }
-        this._list.pop();
+        this._el.children[i].remove();
+        this._list.splice(i, 1);
         this._hasChanged();
     }
     List.prototype._hasChanged = function() {

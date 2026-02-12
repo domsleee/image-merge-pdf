@@ -4,6 +4,7 @@ var Pdf = (function() {
 
     var Pdf = function(el) {
         this.el = el;
+        this._finishHandlers = [];
     }
     Pdf.prototype.makePDF = function(list) {
         // create a document and pipe to a blob
@@ -27,8 +28,15 @@ var Pdf = (function() {
         doc.end();
         var _this = this;
         stream.on('finish', function() {
-            _this.el.src = stream.toBlobURL('application/pdf');
+            var blob = stream.toBlob('application/pdf');
+            _this.el.src = URL.createObjectURL(blob);
+            for (var i = 0; i < _this._finishHandlers.length; i++) {
+                _this._finishHandlers[i](blob);
+            }
         });
+    }
+    Pdf.prototype.addFinishHandler = function(handle) {
+        this._finishHandlers.push(handle);
     }
     return Pdf;
 })();
