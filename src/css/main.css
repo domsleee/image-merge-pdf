@@ -6,11 +6,11 @@ main {
 #dropbox {
     border: 3px dashed #d0d0d0;
     cursor: pointer;
-    -webkit-user-select: none; /* Safari */        
+    -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+/Edge */
     user-select: none; /* Standard */
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 #dropbox:active, #dropbox.over {
     border: 3px dashed lightblue;
@@ -26,12 +26,17 @@ main {
     text-align: center;
 }
 
+
 #dropbox .fileDialog {
     display: none;
 }
 
+/* Compress controls card */
+#compress-controls {
+    border-color: #e0e0e0;
+}
 
-/* */
+/* File list */
 #items {
     margin-left: 0;
     padding-left: 0;
@@ -39,22 +44,74 @@ main {
 #items li {
     list-style: none;
     cursor: move;
-    padding: 10px 20px;
-    border: 1px solid black;
+    padding: 8px 12px 8px 8px;
+    border: 1px solid #ddd;
     margin-top: -1px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+}
+#items li .drag-handle {
+    color: #aaa;
+    margin-right: 10px;
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1;
+}
+#items li .file-name {
+    flex: 1;
+}
+#items li .delete-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    margin-left: 8px;
+}
+#items li .delete-btn:hover {
+    color: #e55;
 }
 #items li.sortable-chosen {
-    background-color: lightblue;
+    background-color: #e8f4fd;
+    border-color: lightblue;
 }
 #items li.sortable-ghost {
     opacity: 0.4;
 }
 
+/* Preview skeleton */
+.preview-skeleton {
+    position: relative;
+    padding-top: 120%;
+    border: 2px dashed #e0e0e0;
+    background: #fafafa;
+    border-radius: 4px;
+}
+
+.skeleton-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #6e6e6e;
+}
+
+.skeleton-content p {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* Preview iframe */
 iframe {
-    border: 1px solid black;
+    border: 1px solid #ddd;
     height: 100%;
 }
 
 #preview {
     width: 100%;
 }
+

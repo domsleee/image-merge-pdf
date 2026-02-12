@@ -1,4 +1,6 @@
 var Dropbox = (function() {
+    var _nextId = 1;
+
     // constructor
     var Dropbox = function(el) {
         this._el = el;
@@ -47,6 +49,7 @@ var Dropbox = (function() {
                 filereader.onload = function(e) {
                     var img = new Image();
                     var nf = {
+                        'id': _nextId++,
                         'base64': e.target.result,
                         'type': type,
                         'name': name,
