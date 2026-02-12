@@ -1,4 +1,4 @@
-# ImgMerge
+# Image Merge PDF
 
 Merge multiple images into a single PDF — free, client-side, no upload required.
 
