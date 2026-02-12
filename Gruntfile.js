@@ -46,11 +46,6 @@ module.exports = function(grunt) {
         }
       }
     },
-    shell: {
-      deploy: {
-        command: "git add dist && git subtree push --prefix dist origin gh-pages"
-      }
-    },
     watch: {
       scripts: {
         files: ["src/**/*.js", "src/**/*.css"],
@@ -64,10 +59,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-cssmin");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-purgecss");
-    grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Set default task to do everything
     grunt.registerTask("default", ["browserify", "uglify", "cssmin", "purgecss"]);
-    grunt.registerTask("deploy", ["browserify", "uglify", "cssmin", "purgecss", "shell"]);
   };
