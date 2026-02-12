@@ -1,0 +1,1 @@
+window.Pdf = require('./pdf');

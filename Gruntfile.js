@@ -1,19 +1,28 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
-      dist: {
+      main: {
         options: {
           transform: ['brfs']
         },
         files: {
           'dist/js/bundle.js': ['src/js/main.js']
         }
+      },
+      pdf: {
+        options: {
+          transform: ['brfs']
+        },
+        files: {
+          'dist/js/pdf.js': ['src/js/pdf-entry.js']
+        }
       }
     },
     uglify: {
       dist: {
         files: {
-          'dist/js/bundle.min.js': ['dist/js/bundle.js']
+          'dist/js/bundle.min.js': ['dist/js/bundle.js'],
+          'dist/js/pdf.min.js': ['dist/js/pdf.js']
         }
       }
     },

@@ -3,7 +3,6 @@ window.jQuery = window.$ = $;
 require('popper.js');
 require('bootstrap');
 
-var Pdf = require('./pdf');
 var Dropbox = require('./dropbox');
 var List = require('./list');
 var Compress = require('./compress');
@@ -16,7 +15,6 @@ function formatBytes(bytes) {
 
 document.addEventListener('DOMContentLoaded', function(){
     var drop = new Dropbox(document.getElementById('dropbox'));
-    var pdf = new Pdf(document.getElementById('preview'));
     var list = new List(document.getElementById('items'));
     var compress = new Compress({
         checkbox: document.getElementById('compressCheckbox'),
@@ -32,6 +30,29 @@ document.addEventListener('DOMContentLoaded', function(){
     var previewPlaceholder = document.getElementById('preview-placeholder');
     var previewActive = document.getElementById('preview-active');
     var currentBlob = null;
+    var pdf = null;
+    var pdfLoading = false;
+    var pdfQueue = null;
+
+    function loadPdf(callback) {
+        if (pdf) { callback(); return; }
+        if (pdfLoading) { pdfQueue = callback; return; }
+        pdfLoading = true;
+        var script = document.createElement('script');
+        script.src = 'js/pdf.min.js';
+        script.onload = function() {
+            pdf = new window.Pdf(document.getElementById('preview'));
+            pdf.addFinishHandler(function(blob) {
+                currentBlob = blob;
+                fileSize.textContent = formatBytes(blob.size);
+                downloadSection.style.display = 'block';
+            });
+            pdfLoading = false;
+            callback();
+            if (pdfQueue) { var q = pdfQueue; pdfQueue = null; q(); }
+        };
+        document.body.appendChild(script);
+    }
 
     function updateLayout(hasFiles) {
         fileListSection.style.display = hasFiles ? 'block' : 'none';
@@ -47,16 +68,12 @@ document.addEventListener('DOMContentLoaded', function(){
             currentBlob = null;
             return;
         }
-        compress.compressList(fileList, function(processed) {
-            pdf.makePDF(processed);
+        loadPdf(function() {
+            compress.compressList(fileList, function(processed) {
+                pdf.makePDF(processed);
+            });
         });
     }
-
-    pdf.addFinishHandler(function(blob) {
-        currentBlob = blob;
-        fileSize.textContent = formatBytes(blob.size);
-        downloadSection.style.display = 'block';
-    });
 
     downloadBtn.addEventListener('click', function() {
         if (!currentBlob) return;
