@@ -13,6 +13,7 @@
     "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.1.0",
+    "grunt-purgecss": "^8.0.0",
     "grunt-shell": "^4.0.0",
     "image-compressor": "^2.0.3",
     "pdfkit": "^0.17.2",

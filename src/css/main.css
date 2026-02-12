@@ -97,7 +97,7 @@ main {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: #767676;
+    color: #6e6e6e;
 }
 
 .skeleton-content p {
