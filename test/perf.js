@@ -1,5 +1,8 @@
 var puppeteer = require('puppeteer');
 var path = require('path');
+var os = require('os');
+
+var tmpDir = os.tmpdir();
 
 (async function() {
     var browser = await puppeteer.launch({
@@ -44,7 +47,7 @@ var path = require('path');
 
     // Upload 8 large PNGs
     var files = [];
-    for (var i = 1; i <= 8; i++) files.push('/tmp/test-perf-' + i + '.png');
+    for (var i = 1; i <= 8; i++) files.push(path.join(tmpDir, 'test-perf-' + i + '.png'));
 
     console.log('\n--- Upload 8 PNGs (9.5 MB each) ---');
     var src = await getPreviewSrc();

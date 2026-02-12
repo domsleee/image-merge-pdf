@@ -1,5 +1,8 @@
 var puppeteer = require('puppeteer');
 var path = require('path');
+var os = require('os');
+
+var tmpDir = os.tmpdir();
 
 function assert(condition, message) {
     if (!condition) {
@@ -31,7 +34,7 @@ function assert(condition, message) {
     // Test 1: Upload PNG only
     console.log('Test 1: Upload PNG...');
     var src0 = await getPreviewSrc();
-    await fileInput.uploadFile('/tmp/test-img.png');
+    await fileInput.uploadFile(path.join(tmpDir, 'test-img.png'));
     await waitForPdfRegeneration(src0);
     var items1 = await page.$$eval('#items li', function(lis) { return lis.length; });
     var size1 = await page.$eval('#fileSize', function(el) { return el.textContent; });
@@ -42,7 +45,7 @@ function assert(condition, message) {
     // Test 2: Upload JPG (added to existing)
     console.log('Test 2: Upload JPG...');
     var src1 = await getPreviewSrc();
-    await fileInput.uploadFile('/tmp/test-img.jpg');
+    await fileInput.uploadFile(path.join(tmpDir, 'test-img.jpg'));
     await waitForPdfRegeneration(src1);
     var items2 = await page.$$eval('#items li', function(lis) { return lis.length; });
     assert(items2 === 2, 'Expected 2 files, got ' + items2);

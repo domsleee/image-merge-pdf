@@ -60,7 +60,13 @@ var Compress = (function() {
         canvas.height = nf.img.height;
         ctx.drawImage(nf.img, 0, 0);
 
-        var jpgBase64 = canvas.toDataURL('image/jpeg', this._quality);
+        var jpgBase64;
+        try {
+            jpgBase64 = canvas.toDataURL('image/jpeg', this._quality);
+        } catch (e) {
+            callback(nf);
+            return;
+        }
         var _this = this;
         var compressedImg = new Image();
         compressedImg.onload = function() {
