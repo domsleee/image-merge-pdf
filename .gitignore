@@ -1,5 +1,4 @@
 node_modules/**
-dist/css/
-dist/js/
+dist/
 **/.DS_Store
 package-lock.json

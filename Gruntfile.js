@@ -36,10 +36,17 @@ module.exports = function(grunt) {
         }
       }
     },
+    copy: {
+      dist: {
+        files: {
+          'dist/index.html': ['src/index.html']
+        }
+      }
+    },
     purgecss: {
       dist: {
         options: {
-          content: ['dist/index.html', 'src/js/**/*.js']
+          content: ['src/index.html', 'src/js/**/*.js']
         },
         files: {
           'dist/css/main.min.css': ['dist/css/main.min.css']
@@ -48,7 +55,7 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: ["src/**/*.js", "src/**/*.css"],
+        files: ["src/**/*.js", "src/**/*.css", "src/index.html"],
         tasks: ["default"]
       }
     }
@@ -58,9 +65,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-contrib-cssmin");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-purgecss");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Set default task to do everything
-    grunt.registerTask("default", ["browserify", "uglify", "cssmin", "purgecss"]);
+    grunt.registerTask("default", ["copy", "browserify", "uglify", "cssmin", "purgecss"]);
   };
