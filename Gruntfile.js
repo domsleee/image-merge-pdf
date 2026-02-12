@@ -10,15 +10,21 @@ module.exports = function(grunt) {
         }
       }
     },
+    uglify: {
+      dist: {
+        files: {
+          'dist/js/bundle.min.js': ['dist/js/bundle.js']
+        }
+      }
+    },
     cssmin: {
-      my_target: {
-        files: [{
-          expand:true,
-          cwd:"src/css",
-          src:["*.css"],
-          dest:"dist/css/",
-          ext:".min.css"
-        }]
+      dist: {
+        files: {
+          'dist/css/main.min.css': [
+            'node_modules/bootstrap/dist/css/bootstrap.min.css',
+            'src/css/main.css'
+          ]
+        }
       }
     },
     shell: {
@@ -37,10 +43,11 @@ module.exports = function(grunt) {
     // Import required tasks
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-contrib-cssmin");
+    grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Set default task to do everything
-    grunt.registerTask("default", ["browserify", "cssmin"]);
-    grunt.registerTask("deploy", ["browserify", "cssmin", "shell"]);
+    grunt.registerTask("default", ["browserify", "uglify", "cssmin"]);
+    grunt.registerTask("deploy", ["browserify", "uglify", "cssmin", "shell"]);
   };

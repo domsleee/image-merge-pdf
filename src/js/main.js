@@ -1,3 +1,8 @@
+var $ = require('jquery');
+window.jQuery = window.$ = $;
+require('popper.js');
+require('bootstrap');
+
 var Pdf = require('./pdf');
 var Dropbox = require('./dropbox');
 var List = require('./list');
