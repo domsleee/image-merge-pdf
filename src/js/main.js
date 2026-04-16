@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
     var downloadBtn = document.getElementById('downloadBtn');
     var previewDownloadBtn = document.getElementById('previewDownloadBtn');
+    var previewStatusBar = document.getElementById('previewStatusBar');
+    var pageIndicator = document.getElementById('pageIndicator');
+    var previewFileSize = document.getElementById('previewFileSize');
+    var previewEl = document.getElementById('preview');
     var fileSize = document.getElementById('fileSize');
     var downloadSection = document.getElementById('downloadSection');
     var fileListSection = document.getElementById('file-list-section');
@@ -43,6 +47,18 @@ document.addEventListener('DOMContentLoaded', function(){
     var pdf = null;
     var pdfLoading = false;
     var pdfQueue = null;
+
+    function updatePageIndicator() {
+        var pageEls = previewEl.querySelectorAll('.preview-page');
+        if (!pageEls.length) return;
+        var midY = previewEl.scrollTop + previewEl.clientHeight / 2;
+        var current = 1;
+        pageEls.forEach(function(el, i) {
+            if (el.offsetTop <= midY) current = i + 1;
+        });
+        pageIndicator.textContent = 'Page ' + current + ' of ' + pageEls.length;
+    }
+    previewEl.addEventListener('scroll', updatePageIndicator);
 
     function triggerDownload() {
         if (!currentBlob) return;
@@ -75,8 +91,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 pdf = new window.Pdf(document.getElementById('preview'));
                 pdf.addFinishHandler(function(blob) {
                     currentBlob = blob;
-                    fileSize.textContent = formatBytes(blob.size);
+                    var sizeText = formatBytes(blob.size);
+                    fileSize.textContent = sizeText;
+                    previewFileSize.textContent = sizeText;
                     downloadSection.style.display = 'block';
+                    updatePageIndicator();
                 });
                 pdfLoading = false;
                 callback();
@@ -89,8 +108,8 @@ document.addEventListener('DOMContentLoaded', function(){
     function updateLayout(hasFiles) {
         fileListSection.style.display = hasFiles ? 'block' : 'none';
         previewPlaceholder.style.display = hasFiles ? 'none' : '';
-        previewActive.style.display = hasFiles ? 'block' : 'none';
-        previewDownloadBtn.style.display = hasFiles ? 'inline-flex' : 'none';
+        previewActive.style.display = hasFiles ? 'flex' : 'none';
+        previewStatusBar.style.display = hasFiles ? 'flex' : 'none';
         if (!hasFiles) downloadSection.style.display = 'none';
     }
 

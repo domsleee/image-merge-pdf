@@ -109,46 +109,81 @@ main {
     font-size: 14px;
 }
 
-.preview-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-}
-
 .preview-panel-title {
+    display: inline-block;
+    margin-bottom: 0.5rem;
     color: #343a40;
 }
 
-.preview-download-btn {
-    border: 1px solid rgba(13, 110, 253, 0.18);
+/* Status bar (bottom of preview panel) */
+.preview-status-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
     background: #fff;
-    color: #0a58ca;
-    border-radius: 999px;
-    padding: 0.35rem 0.8rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    line-height: 1.2;
-    box-shadow: 0 1px 2px rgba(13, 110, 253, 0.08);
+    border-top: 1px solid #e5e7eb;
 }
 
-.preview-download-btn:hover {
-    background: #eef5ff;
+.status-bar-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.status-bar-info .page-count {
+    font-weight: 500;
+    color: #374151;
+}
+
+.status-bar-divider {
+    width: 1px;
+    height: 12px;
+    background: #d1d5db;
+}
+
+.status-bar-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.status-bar-download:hover {
+    background: #0b5ed7;
+}
+
+.status-bar-download svg {
+    flex-shrink: 0;
 }
 
 /* Preview pages */
 #preview-active {
+    position: relative;
+    display: flex;
+    flex-direction: column;
     height: var(--preview-panel-height);
-    overflow: hidden;
     border: 1px solid #ddd;
     border-radius: 4px;
     background: #f7f7f8;
+    overflow: hidden;
 }
 
 #preview {
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 14px;
 }
