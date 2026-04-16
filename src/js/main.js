@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
         loadPdf(function() {
+            pdf.setDownloadName(currentDownloadName);
             compress.compressList(fileList, function(processed) {
                 pdf.makePDF(processed);
             });

@@ -148,8 +148,19 @@ function createStaticServer(rootDir) {
     assert(size5 !== '', 'Expected compressed file size to be set');
     console.log('  PASS: Compressed PDF size: ' + size5);
 
-    // Test 6: Delete first image
-    console.log('Test 6: Delete first image...');
+    // Test 6: Right-click preview context menu download
+    console.log('Test 6: Context menu download...');
+    await page.click('#downloadBtn');
+    await page.evaluate(function() { window.__lastDownloadName = null; });
+    await page.click('#preview canvas', { button: 'right' });
+    await page.waitForSelector('.preview-context-menu:not([hidden])');
+    await page.click('.preview-context-action');
+    const contextMenuDownloadName = await getLastDownloadName();
+    assert(contextMenuDownloadName === expectedDownloadName, 'Expected context menu download name, got ' + contextMenuDownloadName);
+    console.log('  PASS: Context menu download name: ' + contextMenuDownloadName);
+
+    // Test 7: Delete first image
+    console.log('Test 7: Delete first image...');
     const src5 = await getPreviewRenderId();
     await page.click('#items li:first-child .delete-btn');
     await waitForPdfRegeneration(src5, 4);
@@ -158,8 +169,8 @@ function createStaticServer(rootDir) {
     const size6 = await page.$eval('#fileSize', function(el) { return el.textContent; });
     console.log('  PASS: ' + items6 + ' files, PDF size: ' + size6);
 
-    // Test 7: Delete down to placeholder
-    console.log('Test 7: Delete down to placeholder...');
+    // Test 8: Delete down to placeholder
+    console.log('Test 8: Delete down to placeholder...');
     while (await page.$$eval('#items li', function(lis) { return lis.length; }) > 1) {
         const prevRenderId = await getPreviewRenderId();
         const currentCount = await page.$$eval('#items li', function(lis) { return lis.length; });

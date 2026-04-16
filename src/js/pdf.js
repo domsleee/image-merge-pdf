@@ -16,6 +16,7 @@ var Pdf = (function() {
         this.el = el;
         this._finishHandlers = [];
         this._preview = new window.PdfPreview(el);
+        this._downloadName = 'merged.pdf';
     }
     Pdf.prototype.makePDF = function(list) {
         // create a document and pipe to a blob
@@ -45,6 +46,7 @@ var Pdf = (function() {
         const _this = this;
         stream.on('finish', async function() {
             const blob = stream.toBlob('application/pdf');
+            _this._preview.setDownload(blob, _this._downloadName);
             await _this._preview.renderBlob(blob);
             for (let i = 0; i < _this._finishHandlers.length; i++) {
                 _this._finishHandlers[i](blob);
@@ -56,6 +58,9 @@ var Pdf = (function() {
     }
     Pdf.prototype.clear = function() {
         this._preview.clear();
+    }
+    Pdf.prototype.setDownloadName = function(name) {
+        this._downloadName = name || 'merged.pdf';
     }
     return Pdf;
 })();
