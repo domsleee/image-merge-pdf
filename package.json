@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Merges multiple images into a single PDF on the client side",
   "author": "Dom Slee",
+  "scripts": {
+    "dev": "grunt watch",
+    "build": "grunt",
+    "test": "node test/generate-images.js && node test/browser.js"
+  },
   "license": "MIT",
   "devDependencies": {
     "blob-stream": "^0.1.3",

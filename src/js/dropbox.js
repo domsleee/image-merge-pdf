@@ -83,6 +83,11 @@ var Dropbox = (function() {
                 const ctx = canvas.getContext('2d');
                 canvas.width = width;
                 canvas.height = height;
+                if (rgba.length !== width * height * 4) {
+                    console.warn('TIFF decode size mismatch: expected ' + (width * height * 4) + ' bytes, got ' + rgba.length);
+                    done(null);
+                    return;
+                }
                 const imageData = ctx.createImageData(width, height);
                 imageData.data.set(rgba);
                 ctx.putImageData(imageData, 0, 0);
