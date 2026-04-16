@@ -1,6 +1,16 @@
 var Pdf = (function() {
-    var PDFDocument = require('pdfkit');
-    var BlobStream = require('blob-stream');
+    const PDFDocument = require('pdfkit');
+    const BlobStream = require('blob-stream');
+
+    function getPageSize(item) {
+        if (item.dpi && item.dpi.unit === 2 && item.dpi.x && item.dpi.y) {
+            return [
+                item.img.width * 72 / item.dpi.x,
+                item.img.height * 72 / item.dpi.y
+            ];
+        }
+        return [item.img.width, item.img.height];
+    }
 
     var Pdf = function(el) {
         this.el = el;
@@ -9,31 +19,36 @@ var Pdf = (function() {
     }
     Pdf.prototype.makePDF = function(list) {
         // create a document and pipe to a blob
-        var doc = new PDFDocument({
+        const doc = new PDFDocument({
             'margin': 0,
             'autoFirstPage': false
         });
-        var stream = doc.pipe(BlobStream());
+        const stream = doc.pipe(BlobStream());
 
-        for (var i = 0; i < list.length; i++) {
-            var img = list[i].img;
+        for (let i = 0; i < list.length; i++) {
+            const item = list[i];
+            const img = item.img;
+            const pageSize = getPageSize(item);
             doc.addPage({
-                'size': [img.width, img.height],
+                'size': pageSize,
                 'margin': 0
             });
-            var image = list[i].base64;
-            doc.image(image, 0, 0);
+            const image = item.pdfBase64 || item.base64;
+            doc.image(image, 0, 0, {
+                width: pageSize[0],
+                height: pageSize[1]
+            });
         }
 
         // end and display the document in the iframe to the right
         doc.end();
-        var _this = this;
+        const _this = this;
         stream.on('finish', function() {
-            var blob = stream.toBlob('application/pdf');
+            const blob = stream.toBlob('application/pdf');
             if (_this._currentUrl) URL.revokeObjectURL(_this._currentUrl);
             _this._currentUrl = URL.createObjectURL(blob);
             _this.el.src = _this._currentUrl;
-            for (var i = 0; i < _this._finishHandlers.length; i++) {
+            for (let i = 0; i < _this._finishHandlers.length; i++) {
                 _this._finishHandlers[i](blob);
             }
         });
