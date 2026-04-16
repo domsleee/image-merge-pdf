@@ -1,5 +1,6 @@
 const UTIF = require('utif2');
 const TIFF_PDF_MAX_DPI = 200;
+const PDF_INPUT_SCALE = 2;
 
 var Dropbox = (function() {
     let _nextId = 1;
@@ -41,6 +42,18 @@ var Dropbox = (function() {
     }
     Dropbox.prototype._isTiffFile = function(file) {
         return file.type === 'image/tiff' || /\.tiff?$/i.test(file.name);
+    }
+    Dropbox.prototype._isPdfFile = function(file) {
+        return file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    }
+    Dropbox.prototype._waitForPdfJs = function(done) {
+        if (window.pdfjsLib) {
+            done(window.pdfjsLib);
+            return;
+        }
+        window.setTimeout(() => {
+            this._waitForPdfJs(done);
+        }, 25);
     }
     Dropbox.prototype._createImageFile = function(name, type, base64, done) {
         const img = new Image();
@@ -122,6 +135,59 @@ var Dropbox = (function() {
         filereader.onerror = function() { done(null); };
         filereader.readAsArrayBuffer(file);
     }
+    Dropbox.prototype._loadPdfFile = function(file, done) {
+        const filereader = new FileReader();
+        const _this = this;
+
+        filereader.onload = function(e) {
+            _this._waitForPdfJs(function(pdfjsLib) {
+                (async function() {
+                    const bytes = new Uint8Array(e.target.result);
+                    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+                    const pages = [];
+
+                    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                        const page = await pdf.getPage(pageNumber);
+                        const viewport = page.getViewport({ scale: PDF_INPUT_SCALE });
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = Math.ceil(viewport.width);
+                        canvas.height = Math.ceil(viewport.height);
+
+                        await page.render({
+                            canvasContext: ctx,
+                            viewport: viewport
+                        }).promise;
+
+                        const name = file.name.replace(/\.pdf$/i, '') + ' - page ' + pageNumber + '.png';
+                        const nf = await new Promise(function(resolve) {
+                            _this._createImageFile(name, 'image/png', canvas.toDataURL('image/png'), function(result) {
+                                if (result) {
+                                    result.dpi = {
+                                        x: 72 * PDF_INPUT_SCALE,
+                                        y: 72 * PDF_INPUT_SCALE,
+                                        unit: 2
+                                    };
+                                }
+                                resolve(result);
+                            });
+                        });
+
+                        if (nf) {
+                            pages.push(nf);
+                        }
+                    }
+
+                    await pdf.destroy();
+                    done(pages);
+                })().catch(function() {
+                    done([]);
+                });
+            });
+        };
+        filereader.onerror = function() { done([]); };
+        filereader.readAsArrayBuffer(file);
+    }
     Dropbox.prototype._handleFileList = function(files) {
         const _this = this;
         const nfs = [];
@@ -129,12 +195,17 @@ var Dropbox = (function() {
 
         if (remaining === 0) return;
 
-        function finishFile(i, nf) {
-            if (nf) nfs[i] = nf;
+        function finishFile(i, loadedItems) {
+            nfs[i] = loadedItems || [];
             remaining--;
             if (remaining !== 0) return;
 
-            const loaded = nfs.filter(function(item) { return !!item; });
+            const loaded = [];
+            for (let index = 0; index < nfs.length; index++) {
+                if (nfs[index] && nfs[index].length) {
+                    Array.prototype.push.apply(loaded, nfs[index]);
+                }
+            }
             const dh = _this._dropHandlers;
             for (let j = 0; j < dh.length; j++) dh[j](loaded);
         }
@@ -142,9 +213,16 @@ var Dropbox = (function() {
         for (let i = 0; i < files.length; i++) {
             (function(index) {
                 const file = files[index];
+                if (_this._isPdfFile(file)) {
+                    _this._loadPdfFile(file, function(items) {
+                        finishFile(index, items);
+                    });
+                    return;
+                }
+
                 const load = _this._isTiffFile(file) ? _this._loadTiffImage : _this._loadBrowserImage;
                 load.call(_this, file, function(nf) {
-                    finishFile(index, nf);
+                    finishFile(index, nf ? [nf] : []);
                 });
             })(i);
         }

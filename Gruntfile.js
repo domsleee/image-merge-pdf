@@ -38,9 +38,20 @@ module.exports = function(grunt) {
     },
     copy: {
       dist: {
-        files: {
-          'dist/index.html': ['src/index.html']
-        }
+        files: [
+          {
+            expand: true,
+            cwd: 'src',
+            src: ['index.html', 'js/preview.js'],
+            dest: 'dist'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/pdfjs-dist/build',
+            src: ['pdf.mjs', 'pdf.worker.mjs'],
+            dest: 'dist/js/vendor'
+          }
+        ]
       }
     },
     purgecss: {

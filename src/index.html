@@ -32,10 +32,10 @@
         <div id="left-col" class="col-md-6 col-xs-12">
           <label>Merge several images into a single pdf</label>
           <div id="dropbox">
-            <input class="fileDialog" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,.tif,.tiff"/>
+            <input class="fileDialog" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,application/pdf,.pdf,.tif,.tiff"/>
             <div>
               <h3>Drop files here or click to upload.</h3>
-              <small>(PNG/JPG/WebP/GIF/BMP/AVIF/TIFF images supported)</small>
+              <small>(PNG/JPG/WebP/GIF/BMP/AVIF/TIFF/PDF files supported)</small>
             </div>
           </div>
           <div id="compress-controls" class="card mb-3">
@@ -73,13 +73,12 @@
             </div>
           </div>
           <div id="preview-active" style="display:none">
-            <div style="position:relative;padding-top:120%">
-              <iframe id="preview" style="position:absolute;top:0;bottom:0"></iframe>
-            </div>
+            <div id="preview" class="preview-pages"></div>
           </div>
         </div>
       </div>
     </main>
+    <script type="module" src="js/preview.js"></script>
     <script defer src="js/bundle.min.js"></script>
   </body>
 </html>

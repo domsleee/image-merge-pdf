@@ -3,6 +3,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const UTIF = require('utif2');
+const PDFDocument = require('pdfkit');
 
 const tmpDir = os.tmpdir();
 const c = createCanvas(200, 200);
@@ -28,6 +29,17 @@ ctx.fillText('TIF test', 30, 110);
 const rgba = ctx.getImageData(0, 0, c.width, c.height).data;
 const tif = Buffer.from(UTIF.encodeImage(rgba, c.width, c.height));
 fs.writeFileSync(path.join(tmpDir, 'test-img.tif'), tif);
+
+const pdfDoc = new PDFDocument({ margin: 0 });
+const pdfChunks = [];
+pdfDoc.on('data', chunk => pdfChunks.push(chunk));
+pdfDoc.on('end', () => {
+    fs.writeFileSync(path.join(tmpDir, 'test-input.pdf'), Buffer.concat(pdfChunks));
+});
+pdfDoc.fontSize(24).text('PDF input test', 30, 60);
+pdfDoc.addPage();
+pdfDoc.fontSize(24).text('PDF input page 2', 30, 60);
+pdfDoc.end();
 
 // Generate large images for perf tests
 if (process.argv.includes('--perf')) {
