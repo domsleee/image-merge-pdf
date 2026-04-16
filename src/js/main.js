@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 
     var downloadBtn = document.getElementById('downloadBtn');
+    var previewDownloadBtn = document.getElementById('previewDownloadBtn');
     var fileSize = document.getElementById('fileSize');
     var downloadSection = document.getElementById('downloadSection');
     var fileListSection = document.getElementById('file-list-section');
@@ -42,6 +43,16 @@ document.addEventListener('DOMContentLoaded', function(){
     var pdf = null;
     var pdfLoading = false;
     var pdfQueue = null;
+
+    function triggerDownload() {
+        if (!currentBlob) return;
+        var url = URL.createObjectURL(currentBlob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = currentDownloadName;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 
     function waitForPreviewModule(callback) {
         if (window.PdfPreview) {
@@ -79,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function(){
         fileListSection.style.display = hasFiles ? 'block' : 'none';
         previewPlaceholder.style.display = hasFiles ? 'none' : '';
         previewActive.style.display = hasFiles ? 'block' : 'none';
+        previewDownloadBtn.style.display = hasFiles ? 'inline-flex' : 'none';
         if (!hasFiles) downloadSection.style.display = 'none';
     }
 
@@ -94,22 +106,14 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
         }
         loadPdf(function() {
-            pdf.setDownloadName(currentDownloadName);
             compress.compressList(fileList, function(processed) {
                 pdf.makePDF(processed);
             });
         });
     }
 
-    downloadBtn.addEventListener('click', function() {
-        if (!currentBlob) return;
-        var url = URL.createObjectURL(currentBlob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = currentDownloadName;
-        a.click();
-        URL.revokeObjectURL(url);
-    });
+    downloadBtn.addEventListener('click', triggerDownload);
+    previewDownloadBtn.addEventListener('click', triggerDownload);
 
     list.addChangeHandler(regeneratePDF);
     compress.addChangeHandler(regeneratePDF);

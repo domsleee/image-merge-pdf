@@ -35,7 +35,9 @@ class PdfPreview {
             }
 
             const unscaledViewport = page.getViewport({ scale: 1 });
-            const targetWidth = this.el.clientWidth || 480;
+            const styles = window.getComputedStyle(this.el);
+            const horizontalPadding = parseFloat(styles.paddingLeft || '0') + parseFloat(styles.paddingRight || '0');
+            const targetWidth = Math.max((this.el.clientWidth - horizontalPadding) || 480, 1);
             const scale = targetWidth / unscaledViewport.width;
             const outputScale = window.devicePixelRatio || 1;
             const viewport = page.getViewport({ scale: scale });

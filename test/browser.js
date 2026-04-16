@@ -148,16 +148,13 @@ function createStaticServer(rootDir) {
     assert(size5 !== '', 'Expected compressed file size to be set');
     console.log('  PASS: Compressed PDF size: ' + size5);
 
-    // Test 6: Right-click preview context menu download
-    console.log('Test 6: Context menu download...');
-    await page.click('#downloadBtn');
+    // Test 6: Preview toolbar download
+    console.log('Test 6: Preview toolbar download...');
     await page.evaluate(function() { window.__lastDownloadName = null; });
-    await page.click('#preview canvas', { button: 'right' });
-    await page.waitForSelector('.preview-context-menu:not([hidden])');
-    await page.click('.preview-context-action');
-    const contextMenuDownloadName = await getLastDownloadName();
-    assert(contextMenuDownloadName === expectedDownloadName, 'Expected context menu download name, got ' + contextMenuDownloadName);
-    console.log('  PASS: Context menu download name: ' + contextMenuDownloadName);
+    await page.click('#previewDownloadBtn');
+    const previewToolbarDownloadName = await getLastDownloadName();
+    assert(previewToolbarDownloadName === expectedDownloadName, 'Expected preview toolbar download name, got ' + previewToolbarDownloadName);
+    console.log('  PASS: Preview toolbar download name: ' + previewToolbarDownloadName);
 
     // Test 7: Delete first image
     console.log('Test 7: Delete first image...');

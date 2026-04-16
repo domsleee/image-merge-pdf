@@ -60,7 +60,10 @@
           </div>
         </div>
         <div id="right-col" class="col-md-6 col-xs-12">
-          <label>Preview</label>
+          <div class="preview-panel-header">
+            <label class="preview-panel-title mb-0">Preview</label>
+            <button id="previewDownloadBtn" type="button" class="preview-download-btn" style="display:none">Download PDF</button>
+          </div>
           <div id="preview-placeholder" class="preview-skeleton">
             <div class="skeleton-content">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5">
@@ -73,9 +76,6 @@
             </div>
           </div>
           <div id="preview-active" style="display:none">
-            <div class="preview-toolbar">
-              <button id="previewDownloadBtn" type="button" class="btn btn-outline-secondary btn-sm">Download PDF</button>
-            </div>
             <div id="preview" class="preview-pages"></div>
           </div>
         </div>
