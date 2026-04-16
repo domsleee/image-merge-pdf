@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "Merges multiple images into a single PDF on the client side",
   "author": "Dom Slee",
+  "scripts": {
+    "serve": "grunt serve",
+    "dev": "grunt serve",
+    "build": "grunt",
+    "test": "node test/generate-images.js && node test/browser.js"
+  },
   "license": "MIT",
   "devDependencies": {
     "blob-stream": "^0.1.3",
@@ -11,6 +17,7 @@
     "canvas": "^3.2.1",
     "grunt": "^1.6.1",
     "grunt-browserify": "^6.0.0",
+    "grunt-contrib-connect": "^5.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-uglify": "^5.2.2",
@@ -18,6 +25,10 @@
     "grunt-purgecss": "^8.0.0",
     "image-compressor": "^2.0.3",
     "pdfkit": "^0.17.2",
-    "sortablejs": "^1.15.7"
+    "sortablejs": "^1.15.7",
+    "utif2": "^4.1.0"
+  },
+  "dependencies": {
+    "puppeteer": "^24.41.0"
   }
 }

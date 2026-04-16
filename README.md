@@ -6,7 +6,7 @@ Merge multiple images into a single PDF — free, client-side, no upload require
 
 ## Features
 
-- Drag-and-drop or click to upload PNG/JPG images
+- Drag-and-drop or click to upload PNG, JPG, TIFF, and browser-supported image formats
 - Live PDF preview as you add images
 - Drag to reorder, delete individual images
 - Optional JPG compression with adjustable quality slider

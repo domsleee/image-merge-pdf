@@ -1,11 +1,12 @@
-var { createCanvas } = require('canvas');
-var fs = require('fs');
-var os = require('os');
-var path = require('path');
+const { createCanvas } = require('canvas');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const UTIF = require('utif2');
 
-var tmpDir = os.tmpdir();
-var c = createCanvas(200, 200);
-var ctx = c.getContext('2d');
+const tmpDir = os.tmpdir();
+const c = createCanvas(200, 200);
+const ctx = c.getContext('2d');
 
 ctx.fillStyle = 'blue';
 ctx.fillRect(0, 0, 200, 200);
@@ -20,12 +21,20 @@ ctx.fillStyle = 'white';
 ctx.fillText('JPG test', 30, 110);
 fs.writeFileSync(path.join(tmpDir, 'test-img.jpg'), c.toBuffer('image/jpeg'));
 
+ctx.fillStyle = 'green';
+ctx.fillRect(0, 0, 200, 200);
+ctx.fillStyle = 'white';
+ctx.fillText('TIF test', 30, 110);
+const rgba = ctx.getImageData(0, 0, c.width, c.height).data;
+const tif = Buffer.from(UTIF.encodeImage(rgba, c.width, c.height));
+fs.writeFileSync(path.join(tmpDir, 'test-img.tif'), tif);
+
 // Generate large images for perf tests
 if (process.argv.includes('--perf')) {
-    var perfCanvas = createCanvas(3000, 3000);
-    var pctx = perfCanvas.getContext('2d');
-    var colors = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e'];
-    for (var i = 0; i < 8; i++) {
+    const perfCanvas = createCanvas(3000, 3000);
+    const pctx = perfCanvas.getContext('2d');
+    const colors = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e'];
+    for (let i = 0; i < 8; i++) {
         pctx.fillStyle = colors[i];
         pctx.fillRect(0, 0, 3000, 3000);
         pctx.fillStyle = 'white';

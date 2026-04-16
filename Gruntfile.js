@@ -58,6 +58,15 @@ module.exports = function(grunt) {
         files: ["src/**/*.js", "src/**/*.css", "src/index.html"],
         tasks: ["default"]
       }
+    },
+    connect: {
+      server: {
+        options: {
+          base: 'dist',
+          port: 8766,
+          keepalive: true
+        }
+      }
     }
   });
 
@@ -68,7 +77,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-purgecss");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-contrib-connect");
 
     // Set default task to do everything
     grunt.registerTask("default", ["copy", "browserify", "uglify", "cssmin", "purgecss"]);
+    grunt.registerTask("serve", ["default", "connect"]);
   };
