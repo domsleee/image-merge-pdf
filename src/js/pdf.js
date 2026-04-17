@@ -15,7 +15,7 @@ var Pdf = (function() {
     var Pdf = function(el) {
         this.el = el;
         this._finishHandlers = [];
-        this._currentUrl = null;
+        this._preview = new window.PdfPreview(el);
     }
     Pdf.prototype.makePDF = function(list) {
         // create a document and pipe to a blob
@@ -40,14 +40,12 @@ var Pdf = (function() {
             });
         }
 
-        // end and display the document in the iframe to the right
+        // end and render the document in the custom preview pane
         doc.end();
         const _this = this;
-        stream.on('finish', function() {
+        stream.on('finish', async function() {
             const blob = stream.toBlob('application/pdf');
-            if (_this._currentUrl) URL.revokeObjectURL(_this._currentUrl);
-            _this._currentUrl = URL.createObjectURL(blob);
-            _this.el.src = _this._currentUrl;
+            await _this._preview.renderBlob(blob);
             for (let i = 0; i < _this._finishHandlers.length; i++) {
                 _this._finishHandlers[i](blob);
             }
@@ -55,6 +53,9 @@ var Pdf = (function() {
     }
     Pdf.prototype.addFinishHandler = function(handle) {
         this._finishHandlers.push(handle);
+    }
+    Pdf.prototype.clear = function() {
+        this._preview.clear();
     }
     return Pdf;
 })();

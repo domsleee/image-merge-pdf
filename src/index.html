@@ -32,10 +32,10 @@
         <div id="left-col" class="col-md-6 col-xs-12">
           <label>Merge several images into a single pdf</label>
           <div id="dropbox">
-            <input class="fileDialog" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,.tif,.tiff"/>
+            <input class="fileDialog" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/avif,application/pdf,.pdf,.tif,.tiff"/>
             <div>
               <h3>Drop files here or click to upload.</h3>
-              <small>(PNG/JPG/WebP/GIF/BMP/AVIF/TIFF images supported)</small>
+              <small>(PNG/JPG/WebP/GIF/BMP/AVIF/TIFF/PDF files supported)</small>
             </div>
           </div>
           <div id="compress-controls" class="card mb-3">
@@ -60,7 +60,7 @@
           </div>
         </div>
         <div id="right-col" class="col-md-6 col-xs-12">
-          <label>Preview</label>
+          <label class="preview-panel-title mb-0">Preview</label>
           <div id="preview-placeholder" class="preview-skeleton">
             <div class="skeleton-content">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5">
@@ -73,13 +73,25 @@
             </div>
           </div>
           <div id="preview-active" style="display:none">
-            <div style="position:relative;padding-top:120%">
-              <iframe id="preview" style="position:absolute;top:0;bottom:0"></iframe>
+            <div id="preview" class="preview-pages"></div>
+            <div id="previewStatusBar" class="preview-status-bar" style="display:none">
+              <div class="status-bar-info">
+                <span id="pageIndicator" class="page-count"></span>
+                <span class="status-bar-divider"></span>
+                <span id="previewFileSize"></span>
+              </div>
+              <button id="previewDownloadBtn" type="button" class="status-bar-download">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 2v9"/><path d="M4 8l4 4 4-4"/><path d="M2 14h12"/>
+                </svg>
+                Download PDF
+              </button>
             </div>
           </div>
         </div>
       </div>
     </main>
+    <script type="module" src="js/preview.js"></script>
     <script defer src="js/bundle.min.js"></script>
   </body>
 </html>
