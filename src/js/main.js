@@ -42,11 +42,38 @@ document.addEventListener('DOMContentLoaded', function(){
     var fileListSection = document.getElementById('file-list-section');
     var previewPlaceholder = document.getElementById('preview-placeholder');
     var previewActive = document.getElementById('preview-active');
+    var zoomInBtn = document.getElementById('zoomInBtn');
+    var zoomOutBtn = document.getElementById('zoomOutBtn');
+    var zoomLevelEl = document.getElementById('zoomLevel');
     var currentBlob = null;
     var currentDownloadName = 'merged.pdf';
     var pdf = null;
     var pdfLoading = false;
     var pdfQueue = null;
+
+    // Zoom state
+    var ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
+    var zoomIndex = 2; // 100%
+
+    function applyZoom() {
+        var scale = ZOOM_STEPS[zoomIndex] / 100;
+        previewEl.style.width = scale === 1 ? '' : (scale * 100) + '%';
+        zoomLevelEl.textContent = ZOOM_STEPS[zoomIndex] + '%';
+        zoomOutBtn.disabled = zoomIndex === 0;
+        zoomInBtn.disabled = zoomIndex === ZOOM_STEPS.length - 1;
+    }
+
+    function resetZoom() {
+        zoomIndex = 2;
+        applyZoom();
+    }
+
+    zoomInBtn.addEventListener('click', function() {
+        if (zoomIndex < ZOOM_STEPS.length - 1) { zoomIndex++; applyZoom(); }
+    });
+    zoomOutBtn.addEventListener('click', function() {
+        if (zoomIndex > 0) { zoomIndex--; applyZoom(); }
+    });
 
     function updatePageIndicator() {
         var pageEls = previewEl.querySelectorAll('.preview-page');
@@ -116,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function(){
     function regeneratePDF() {
         var fileList = list.getList();
         currentDownloadName = buildDownloadName(fileList);
+        resetZoom();
         updateLayout(fileList.length > 0);
         if (fileList.length === 0) {
             currentBlob = null;
