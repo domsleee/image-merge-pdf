@@ -143,7 +143,6 @@ document.addEventListener('DOMContentLoaded', function(){
     function regeneratePDF() {
         var fileList = list.getList();
         currentDownloadName = buildDownloadName(fileList);
-        resetZoom();
         updateLayout(fileList.length > 0);
         if (fileList.length === 0) {
             currentBlob = null;
@@ -162,7 +161,10 @@ document.addEventListener('DOMContentLoaded', function(){
     downloadBtn.addEventListener('click', triggerDownload);
     previewDownloadBtn.addEventListener('click', triggerDownload);
 
-    list.addChangeHandler(regeneratePDF);
+    list.addChangeHandler(function() {
+        resetZoom();
+        regeneratePDF();
+    });
     compress.addChangeHandler(regeneratePDF);
 
     drop.addDropHandler(function(nfs) {

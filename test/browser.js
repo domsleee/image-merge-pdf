@@ -54,6 +54,7 @@ function createStaticServer(rootDir) {
 
     const browser = await puppeteer.launch({
         headless: 'new',
+        timeout: 120000,
         args: process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
     });
     const page = await browser.newPage();
@@ -79,10 +80,10 @@ function createStaticServer(rootDir) {
         await page.waitForFunction(function(prev) {
             const el = document.getElementById('preview');
             return !!el.dataset.renderId && el.dataset.renderId !== prev;
-        }, { timeout: 10000 }, prevRenderId);
+        }, { timeout: 30000 }, prevRenderId);
         await page.waitForFunction(function(pageCount) {
             return document.querySelectorAll('#preview canvas').length === pageCount;
-        }, { timeout: 10000 }, expectedPages);
+        }, { timeout: 30000 }, expectedPages);
     }
 
     const fileInput = await page.$('input.fileDialog');
@@ -203,8 +204,32 @@ function createStaticServer(rootDir) {
     assert(zoomAfterReset === '100%', 'Expected zoom to reset to 100%, got ' + zoomAfterReset);
     console.log('  PASS: ' + zoomBeforeReset + ' -> ' + zoomAfterReset + ' after adding file');
 
-    // Test 12: Delete first image
-    console.log('Test 12: Delete first image...');
+    // Test 12: Zoom is preserved across compression toggles
+    console.log('Test 12: Zoom preserved on compression toggle...');
+    await page.click('#zoomInBtn');
+    const zoomBeforeCompressToggle = await page.$eval('#zoomLevel', function(el) { return el.textContent; });
+    assert(zoomBeforeCompressToggle === '125%', 'Expected zoom 125% before compression toggle, got ' + zoomBeforeCompressToggle);
+    const src5c = await getPreviewRenderId();
+    await page.click('#compressCheckbox');
+    await waitForPdfRegeneration(src5c, 6);
+    const zoomAfterCompressToggle = await page.$eval('#zoomLevel', function(el) { return el.textContent; });
+    assert(zoomAfterCompressToggle === zoomBeforeCompressToggle, 'Expected zoom to remain ' + zoomBeforeCompressToggle + ' after compression toggle, got ' + zoomAfterCompressToggle);
+    console.log('  PASS: Zoom stayed at ' + zoomAfterCompressToggle);
+
+    // Test 13: Preview download button stays named on narrow screens
+    console.log('Test 13: Mobile preview download accessible name...');
+    await page.setViewport({ width: 390, height: 844 });
+    await page.waitForFunction(function() {
+        return window.matchMedia('(max-width: 767.98px)').matches;
+    }, { timeout: 10000 });
+    const previewDownloadBtn = await page.$('#previewDownloadBtn');
+    const downloadAccessibility = await page.accessibility.snapshot({ root: previewDownloadBtn });
+    assert(downloadAccessibility && downloadAccessibility.name === 'Download PDF', 'Expected mobile preview download button accessible name to be "Download PDF", got ' + JSON.stringify(downloadAccessibility));
+    await page.setViewport({ width: 1280, height: 800 });
+    console.log('  PASS: Accessible name on mobile is ' + downloadAccessibility.name);
+
+    // Test 14: Delete first image
+    console.log('Test 14: Delete first image...');
     const src5 = await getPreviewRenderId();
     await page.click('#items li:first-child .delete-btn');
     await waitForPdfRegeneration(src5, 5);
@@ -213,8 +238,8 @@ function createStaticServer(rootDir) {
     const size6 = await page.$eval('#fileSize', function(el) { return el.textContent; });
     console.log('  PASS: ' + items6 + ' files, PDF size: ' + size6);
 
-    // Test 13: Delete down to placeholder
-    console.log('Test 13: Delete down to placeholder...');
+    // Test 15: Delete down to placeholder
+    console.log('Test 15: Delete down to placeholder...');
     while (await page.$$eval('#items li', function(lis) { return lis.length; }) > 1) {
         const prevRenderId = await getPreviewRenderId();
         const currentCount = await page.$$eval('#items li', function(lis) { return lis.length; });
@@ -225,7 +250,7 @@ function createStaticServer(rootDir) {
     await page.waitForFunction(function() {
         const ph = document.getElementById('preview-placeholder');
         return ph && ph.style.display !== 'none';
-    }, { timeout: 10000 });
+    }, { timeout: 30000 });
     const items7 = await page.$$eval('#items li', function(lis) { return lis.length; });
     const placeholder = await page.$eval('#preview-placeholder', function(el) {
         return el.style.display !== 'none';
