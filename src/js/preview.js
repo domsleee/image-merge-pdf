@@ -51,8 +51,7 @@ class PdfPreview {
             canvas.className = 'preview-canvas';
             canvas.width = Math.ceil(renderViewport.width);
             canvas.height = Math.ceil(renderViewport.height);
-            canvas.style.width = Math.ceil(viewport.width) + 'px';
-            canvas.style.height = Math.ceil(viewport.height) + 'px';
+            canvas.style.aspectRatio = renderViewport.width + ' / ' + renderViewport.height;
 
             pageEl.appendChild(canvas);
             this.el.appendChild(pageEl);
